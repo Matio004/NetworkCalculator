@@ -1,0 +1,82 @@
+
+<NumEntry>:
+    multiline: False
+    size_hint_y: None
+    height: dp(32)
+    font_size: dp(16)
+
+    background_color: 82/255, 82/255, 82/255
+    foreground_color: 1, 1, 1
+
+    cursor_color: 1, 1, 1
+
+
+<AnswerLabel@Label>
+    height: dp(32)
+    size_hint_y: None
+    font_size: dp(24)
+
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+Root:
+<Root>:
+    canvas.before:
+        Color:
+            rgb: 18/255, 18/255, 18/255
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    input_box: input_box
+    orientation: 'vertical'
+
+    Button:
+        text: 'Calculate'
+        on_press: root.update()
+        size_hint_y: .2
+
+        background_color: 82/255, 82/255, 82/255
+
+    NumEntry:
+        id: input_box
+        supported_chars: ['.', '/']
+
+    GridLayout:
+        cols: 2
+        spacing: dp(20)
+
+        AnswerLabel:
+            text: 'Network Address:'
+
+        AnswerLabel:
+            text: root.network_address
+
+        AnswerLabel:
+            text: 'Broadcast:'
+
+        AnswerLabel:
+            text: root.broadcast_address
+
+        AnswerLabel:
+            text: 'First Host:'
+
+        AnswerLabel:
+            text: root.host0
+
+        AnswerLabel:
+            text: 'Last Host:'
+
+        AnswerLabel:
+            text: root.host_1
+
+        AnswerLabel:
+            text: 'Max Hosts:'
+
+        AnswerLabel:
+            text: root.max_hosts
