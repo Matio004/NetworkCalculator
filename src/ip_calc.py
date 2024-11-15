@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 
 class Octet:
@@ -20,7 +20,9 @@ class Octet:
 
     def check_for_errors(self):
         if self.__octet > 255:
-            raise ValueError('Octet should be a decimal number 0-255')
+            raise ValueError('Octet should be a decimal number 0-255!')
+        if self.__octet < 0:
+            raise ValueError('Octet can\' be lower than 0!')
 
     def __add__(self, other):
         return Octet(self.__octet+other.__octet)
@@ -37,6 +39,9 @@ class Octet:
     def __len__(self):
         return 8
 
+    def __eq__(self, other):
+        return self.__octet == other.__octet
+
     def count(self, x: int):
         temp = self.__octet
         count = 0
@@ -48,8 +53,10 @@ class Octet:
 
 
 class IPv4:
-    def __init__(self, ip: Union[list[int], list[Octet], tuple[int], tuple[Octet]]):
-        self.__ipv4 = [Octet(i) for i in ip]
+    def __init__(self, *args, ip: Optional[Union[list[int], list[Octet], tuple[int], tuple[Octet]]] = None):
+        if len(args) != 4:
+            raise IndexError('IPv4 is 4 bytes')
+        self.__ipv4 = [Octet(i) for i in (args if ip is None else ip)]
 
         self.check_for_errors()
 
@@ -71,11 +78,11 @@ class IPv4:
         for i in range(3, -1, -1):
             temp[i] = ip & 255
             ip >>= 8
-        return cls(temp)
+        return cls(*temp)
 
     @classmethod
     def from_string(cls, ip: str):
-        return cls(list(map(int, ip.split('.'))))
+        return cls(*list(map(int, ip.split('.'))))
 
     def __repr__(self):
         return '.'.join(map(str, self.__ipv4))
@@ -90,26 +97,32 @@ class IPv4:
         new = []
         for octet in range(len(self.__ipv4)):
             new.append(self.__ipv4[octet] + other.__ipv4[octet])
-        return IPv4(new)
+        return IPv4(*new)
 
     def __sub__(self, other):
         new = []
         for octet in range(len(self.__ipv4)):
             new.append(self.__ipv4[octet] - other.__ipv4[octet])
-        return IPv4(new)
+        return IPv4(*new)
 
     def __invert__(self):
         new = []
 
         for octet in range(len(self.__ipv4)):
             new.append(~self.__ipv4[octet])
-        return IPv4(new)
+        return IPv4(*new)
 
     def __and__(self, other):
         new = []
         for octet in range(len(self.__ipv4)):
             new.append(self.__ipv4[octet] & other.__ipv4[octet])
-        return IPv4(new)
+        return IPv4(*new)
+
+    def __eq__(self, other):
+        for i in range(len(self.__ipv4)):
+            if self.__ipv4[i] != other.__ipv4[i]:
+                return False
+        return True
 
     def count(self, x: int):
         count_ = 0
@@ -122,17 +135,17 @@ class Network:
     def __init__(self, ip: str, mask: str = None):
         if mask is None:
             self.__mask = IPv4.from_cidr(int(ip.split('/')[-1]))
-            self.ip = IPv4.from_string(ip.split('/')[0])
+            self.__ip = IPv4.from_string(ip.split('/')[0])
         else:
-            self.ip = IPv4.from_string(ip)
+            self.__ip = IPv4.from_string(ip)
             self.__mask = IPv4.from_string(mask)
 
     def __repr__(self):
-        return f'IP: {self.ip}\nMask: {self.__mask}'
+        return f'IP: {self.__ip}\nMask: {self.__mask}'
 
     @property
     def network_address(self):
-        return self.ip & self.__mask
+        return self.__ip & self.__mask
 
     @property
     def broadcast_address(self):
