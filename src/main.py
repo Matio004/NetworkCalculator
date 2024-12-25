@@ -47,11 +47,12 @@ class Root(BoxLayout):
 
     def update(self):
         try:
-            self.network_address = str(Network(self.input_box.text).network_address)
-            self.broadcast_address = str(Network(self.input_box.text).broadcast_address)
-            self.host0 = str(Network(self.input_box.text).host0)
-            self.host_1 = str(Network(self.input_box.text).host_1)
-            self.max_hosts = str(Network(self.input_box.text).max_hosts)
+            network = Network(*self.input_box.text.split(' '))
+            self.network_address = str(network.network_address)
+            self.broadcast_address = str(network.broadcast_address)
+            self.host0 = str(network.host0)
+            self.host_1 = str(network.host_1)
+            self.max_hosts = str(network.max_hosts)
 
         except ValueError:
             self.network_address = 'Wrong IP'
