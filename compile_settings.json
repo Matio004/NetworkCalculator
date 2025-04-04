@@ -7,7 +7,7 @@
   },
   {
    "optionDest": "filenames",
-   "value": "D:/JetBrainsProjects/PycharmProjects/NetworkCalculator/main.py"
+   "value": "D:/JetBrainsProject/PycharmProjects/NetworkCalculator/src/main.py"
   },
   {
    "optionDest": "onefile",
@@ -19,11 +19,7 @@
   },
   {
    "optionDest": "name",
-   "value": "Network Calculator"
-  },
-  {
-   "optionDest": "contents_directory",
-   "value": "."
+   "value": "NetworkCalculator"
   },
   {
    "optionDest": "clean_build",
@@ -59,15 +55,11 @@
   },
   {
    "optionDest": "datas",
-   "value": "D:/JetBrainsProjects/PycharmProjects/NetworkCalculator/ip_calc.py;."
+   "value": "D:/JetBrainsProject/PycharmProjects/NetworkCalculator/src/ip_calc.py;."
   },
   {
    "optionDest": "datas",
-   "value": "D:/JetBrainsProjects/PycharmProjects/NetworkCalculator/licence.md;."
-  },
-  {
-   "optionDest": "datas",
-   "value": "D:/JetBrainsProjects/PycharmProjects/NetworkCalculator/networkcalculator.kv;."
+   "value": "D:/JetBrainsProject/PycharmProjects/NetworkCalculator/src/networkcalculator.kv;."
   }
  ],
  "nonPyinstallerOptions": {
