@@ -26,6 +26,10 @@
    "value": false
   },
   {
+   "optionDest": "loglevel",
+   "value": "DEBUG"
+  },
+  {
    "optionDest": "strip",
    "value": false
   },
