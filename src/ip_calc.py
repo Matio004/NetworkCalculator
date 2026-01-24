@@ -13,16 +13,16 @@ class Octet:
         self.check_for_errors()
 
     def __repr__(self):
-        return f'Octet({self.__octet})'
+        return f'Oktet({self.__octet})'
 
     def __str__(self):
         return f'{self.__octet}'
 
     def check_for_errors(self):
         if self.__octet > 255:
-            raise ValueError('Octet should be a decimal number 0-255!')
+            raise ValueError('Oktet musi być liczbą całkowitą z przedziału 0-255')
         if self.__octet < 0:
-            raise ValueError('Octet can\' be lower than 0!')
+            raise ValueError('Oktet musi być większy lub równy 0')
 
     def __add__(self, other):
         return Octet(self.__octet+other.__octet)
@@ -55,7 +55,7 @@ class Octet:
 class IPv4:
     def __init__(self, *args, ip: Optional[Union[list[int], list[Octet], tuple[int], tuple[Octet]]] = None):
         if len(args) != 4:
-            raise IndexError('IPv4 is 4 bytes')
+            raise IndexError('IPv4 musi zawierać dokładnie 4 oktety')
         self.__ipv4 = [Octet(i) for i in (args if ip is None else ip)]
 
         self.check_for_errors()
@@ -69,7 +69,7 @@ class IPv4:
                 temp |= 1
             temp <<= 32 - cidr
             return cls.from_int(temp)
-        raise ValueError("Cidr can't be higher than 32")
+        raise ValueError("Maska CIDR nie może być wyższa niż 32")
 
     @classmethod
     def from_int(cls, ip: int):
@@ -91,7 +91,8 @@ class IPv4:
         [octet.check_for_errors() for octet in self.__ipv4]
 
         if len(self.__ipv4) != 4:
-            raise ValueError('IPv4 contains 4 octets. Octet value should be 0-255')
+            raise ValueError('IPv4 musi zawierać dokładnie 4 oktety. '
+                             'Wartość każdego oktetu musi być między 0-255')
 
     def __add__(self, other):
         new = []
@@ -141,7 +142,7 @@ class Network:
             self.__mask = IPv4.from_string(mask)
 
     def __repr__(self):
-        return f'IP: {self.__ip}\nMask: {self.__mask}'
+        return f'IP: {self.__ip}\nMaska: {self.__mask}'
 
     @property
     def network_address(self):
@@ -163,6 +164,10 @@ class Network:
     def max_hosts(self):
         return 2 ** self.__mask.count(0) - 2
 
+    @property
+    def mask(self):
+        return self.__mask
+
 
 if __name__ == '__main__':
     while True:
@@ -173,11 +178,12 @@ if __name__ == '__main__':
                   f'Adres rozgłoszeniowy: {net.broadcast_address}\n'
                   f'Adres pierwszego hosta: {net.host0}\n'
                   f'Adres ostatniego hosta: {net.host_1}\n'
-                  f'Liczba hostów do zaadresowania: {net.max_hosts}\n')
+                  f'Liczba hostów do zaadresowania: {net.max_hosts}\n'
+                  f'Maska podsieci: {net.mask}\n')
 
         except ValueError as ex:
             print(ex)
-            print('Wprowadź dane ponownie...')
+            print('Wprowadź dane ponownie...\n')
 
         except KeyboardInterrupt:
             print('Koniec')
