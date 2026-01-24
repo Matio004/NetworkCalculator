@@ -11,28 +11,23 @@ class NumEntry(TextInput):
     supported_chars = ListProperty(tuple())
 
     def insert_text(self, substring: str, from_undo=False):
-        if substring.isdecimal() or substring in self.supported_chars:
-            if substring in self.supported_chars:
-                if not len(self.text):  # add to text if there is no text
-                    return super(NumEntry, self).insert_text(substring, from_undo)
-                elif substring in self.supported_chars:  # and substring not in self.text:
-                    return super(NumEntry, self).insert_text(substring, from_undo)  # only one . or - in text
-                return super(NumEntry, self).insert_text('', from_undo)  # can't type - in the middle
-            return super(NumEntry, self).insert_text(substring, from_undo)  # type numbers
-        return super(NumEntry, self).insert_text('', from_undo)  # if not number don't type
+        # not a number or a supported character
+        if not substring.isdecimal() and substring not in self.supported_chars:
+            return super().insert_text('', from_undo)
+
+        # validate special characters
+        if substring in self.supported_chars:
+            if substring in self.text:
+                return super().insert_text('', from_undo)
+
+        return super().insert_text(substring, from_undo)
 
     @property
     def float(self):
-        """
-        :return: Float of text
-        """
         return float(self.text)
 
     @property
     def int(self):
-        """
-        :return: int of text
-        """
         return int(self.text)
 
 
