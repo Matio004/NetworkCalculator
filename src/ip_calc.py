@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from typing import Union, Optional
 
 
@@ -165,20 +166,51 @@ class Network:
 
 
 if __name__ == '__main__':
-    while True:
-        try:
-            net = Network(input('Podaj adres ip i skrócony zapis maski: '))
+    arg_parser = ArgumentParser(
+        'ip_calc', description='CLI for network calculator. By default it gives all information in verbose form',
+        epilog='Program developed for IT in high school'
+    )
+    arg_parser.add_argument('-a', '--address', type=str,
+                            help='ip address and mask in CIDR form. If you wish to give mask explicitly use -m.')
+    arg_parser.add_argument('-m', '--mask', type=str,
+                            help='mask defined as ip address')
+    arg_parser.add_argument('-n', '--network', action='store_true', help='show network address')
+    arg_parser.add_argument('-b', '--broadcast', action='store_true', help='show broadcast address')
+    arg_parser.add_argument('-f', '--first', action='store_true', help='show first host address')
+    arg_parser.add_argument('-l', '--last', action='store_true', help='show last host address')
+    arg_parser.add_argument('-c', '--count', action='store_true', help='show count of available ip addresses')
 
-            print(f'\nAdres sieci: {net.network_address}\n'
-                  f'Adres rozgłoszeniowy: {net.broadcast_address}\n'
-                  f'Adres pierwszego hosta: {net.host0}\n'
-                  f'Adres ostatniego hosta: {net.host_1}\n'
-                  f'Liczba hostów do zaadresowania: {net.max_hosts}\n')
+    args = arg_parser.parse_args()
 
-        except ValueError as ex:
-            print(ex)
-            print('Wprowadź dane ponownie...')
+    if not args.address:
+        raise ValueError('No ip address was provided')
+    else:
+        if args.mask:
+            try:
+                net = Network(args.address, args.mask)
+            except ValueError:
+                raise ValueError('Address must be a valid ip. If you have used -m then there should be no cidr given.')
+        else:
+            try:
+                net = Network(args.address)
+            except ValueError:
+                raise ValueError('It is not a valid ip address. Remember you must specify cidr')
 
-        except KeyboardInterrupt:
-            print('Koniec')
-            break
+        if any((args.network, args.broadcast, args.first, args.last, args.count)):
+            if args.network:
+                print(f'Network Address: {net.network_address}')
+            if args.broadcast:
+                print(f'Broadcast Address: {net.broadcast_address}')
+            if args.first:
+                print(f'First Host Address: {net.host0}')
+            if args.last:
+                print(f'Last Host Address: {net.host_1}')
+            if args.count:
+                print(f'Number of addressable hosts: {net.max_hosts}')
+
+        else:
+            print(f'\nNetwork Address: {net.network_address}\n'
+                  f'Broadcast Address: {net.broadcast_address}\n'
+                  f'First Host Address: {net.host0}\n'
+                  f'Last Host Address: {net.host_1}\n'
+                  f'Number of addressable hosts: {net.max_hosts}\n')
